@@ -1,12 +1,13 @@
 (function () {
+  if (typeof window === 'undefined' || typeof document === 'undefined') {
+    return;
+  }
+
   if (!window.axe) {
     console.error('[A11Y] axe-core not found on page');
     return;
   }
 
-  /**
-   * Normalize axe results to a stable, portable structure
-   */
   function normalizeResults(raw, context = {}) {
     return {
       url: window.location.href,
@@ -23,7 +24,7 @@
         description: v.description,
         helpUrl: v.helpUrl,
         tags: v.tags,
-        nodes: v.nodes.map(n => ({
+        nodes: (v.nodes || []).map(n => ({
           html: n.html,
           target: n.target,
           failureSummary: n.failureSummary
@@ -32,27 +33,70 @@
     };
   }
 
-  /**
-   * Run axe-core scan
-   */
-  async function runAxe(config = {}) {
-    const axeConfig = {
-      runOnly: {
-        type: 'tag',
-        values: config.tags || []
-      },
-      resultTypes: ['violations'],
-      rules: config.rules || {}
-    };
+  function waitForDomStability({
+    quietWindowMs = 500,
+    maxWaitMs = 3000
+  } = {}) {
+    return new Promise(resolve => {
+      let lastMutation = Date.now();
 
-    return await window.axe.run(document, axeConfig);
+      const observer = new MutationObserver(() => {
+        lastMutation = Date.now();
+      });
+
+      observer.observe(document.documentElement, {
+        childList: true,
+        subtree: true,
+        attributes: true
+      });
+
+      const interval = setInterval(() => {
+        const now = Date.now();
+        if (now - lastMutation >= quietWindowMs) {
+          cleanup();
+        }
+      }, 100);
+
+      const timeout = setTimeout(() => {
+        cleanup();
+      }, maxWaitMs);
+
+      function cleanup() {
+        clearInterval(interval);
+        clearTimeout(timeout);
+        observer.disconnect();
+        resolve();
+      }
+    });
   }
 
-  /**
-   * Filter violations by impact
-   */
+  function buildAxeConfig(config = {}) {
+    const axeConfig = {
+      preload: false, // 🔑 prevents CSP preload failures
+      resultTypes: ['violations']
+    };
+
+    if (Array.isArray(config.tags) && config.tags.length > 0) {
+      axeConfig.runOnly = {
+        type: 'tag',
+        values: config.tags
+      };
+    }
+
+    if (config.rules && typeof config.rules === 'object') {
+      axeConfig.rules = config.rules;
+    }
+
+    return axeConfig;
+  }
+
+  async function runAxe(config = {}) {
+    const axeConfig = buildAxeConfig(config);
+    return window.axe.run(document, axeConfig);
+  }
+
   function filterByImpact(results, allowedImpacts) {
-    if (!allowedImpacts || allowedImpacts.length === 0) {
+    if (!Array.isArray(allowedImpacts) || allowedImpacts.length === 0) {
       return results;
     }
 
@@ -64,72 +108,71 @@
     };
   }
 
-  /**
-   * Wait for DOM stability (important for React / hydration)
-   */
-  function waitForDomStability(timeoutMs = 3000) {
-    return new Promise(resolve => {
-      let settled = false;
-
-      const observer = new MutationObserver(() => {
-        settled = false;
-      });
-
-      observer.observe(document, {
-        childList: true,
-        subtree: true,
-        attributes: true
-      });
-
-      setTimeout(() => {
-        observer.disconnect();
-        resolve();
-      }, timeoutMs);
-    });
-  }
-
-  /**
-   * Main scan handler
-   */
   async function handleScan(request) {
-    const config = request.config || {};
+    const config = request?.config || {};
 
-    // Give SPA frameworks time to settle
-    await waitForDomStability(config.domSettleMs || 1500);
+    await waitForDomStability({
+      quietWindowMs: config.domQuietMs || 500,
+      maxWaitMs: config.domSettleMs || 3000
+    });
 
     const rawResults = await runAxe(config);
+
     const normalized = normalizeResults(rawResults, {
-      impacts: config.impacts,
-      tags: config.tags
+      impacts: config.impacts || [],
+      tags: config.tags || []
     });
 
     return filterByImpact(normalized, config.impacts);
   }
 
-  /**
-   * Message listener (single entry point)
-   */
-  chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
-    if (request.type !== 'RUN_A11Y_SCAN') return;
+  if (
+    typeof chrome !== 'undefined' &&
+    chrome.runtime &&
+    chrome.runtime.onMessage
+  ) {
+    chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+      if (!request || request.type !== 'RUN_A11Y_SCAN') {
+        return;
+      }
 
-    handleScan(request)
-      .then(results => sendResponse(results))
-      .catch(error =>
-        sendResponse({
-          error: true,
-          message: error.message || String(error)
+      handleScan(request)
+        .then(results => {
+          sendResponse(results);
         })
-      );
+        .catch(err => {
+          sendResponse({
+            error: true,
+            message: err?.message || String(err),
+            stack: err?.stack || null
+          });
+        });
 
-    // Required for async response
-    return true;
-  });
+      return true;
+    });
+  }
 
-  /**
-   * Optional: expose for DevTools / manual debugging
-   */
-  window.runA11yScan = async function (config) {
-    const rawResults = await runAxe(config || {});
-    return normalizeResults(rawResults);
+  window.runA11yScan = async function (config = {}) {
+    try {
+      await waitForDomStability({
+        quietWindowMs: 500,
+        maxWaitMs: 3000
+      });
+
+      const raw = await runAxe(config);
+      const normalized = normalizeResults(raw, config);
+
+      window.__A11Y_SCAN_RESULT__ = normalized;
+      console.info('[A11Y] Scan complete', normalized);
+      return normalized;
+    } catch (e) {
+      const error = {
+        message: e?.message || String(e),
+        stack: e?.stack || null
+      };
+      window.__A11Y_SCAN_ERROR__ = error;
+      console.error('[A11Y] Scan failed', error);
+      throw e;
+    }
   };
 })();

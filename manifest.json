@@ -33,16 +33,6 @@
   "host_permissions": [
     "<all_urls>"
   ],
-  "content_scripts": [
-    {
-      "matches": ["<all_urls>"],
-      "js": [
-        "vendor/axe.min.js",
-        "content/axe-runner.js"
-      ],
-      "run_at": "document_idle"
-    }
-  ],
   "background": {
     "service_worker": "background/service-worker.js",
     "type": "module"
@@ -51,12 +41,12 @@
     {
       "resources": [
         "policy.json",
-        "vendor/axe.min.js"
+        "vendor/axe.min.js",
+        "content/axe-runner.js"
       ],
       "matches": ["<all_urls>"]
     }
   ],
-  "minimum_chrome_version": "109",
   "commands": {
     "run-scan": {
       "suggested_key": {
@@ -66,16 +56,16 @@
       "description": "Run accessibility scan on the current page"
     }
   },
-  "incognito": "split",
-  "content_security_policy": {
-    "extension_pages": "script-src 'self'; object-src 'self';"
-  },
-  "offline_enabled": true,
-  "homepage_url": "https://github.com/ankitarora05/awesome-a11y-accessibility-auditor",
-  "update_url": "https://chrome.google.com/webstore/download/jfdhjdhjbbldgdelkpjkfnpgcpjkppem/revision/__DRAFT/package/main/crx/3",
-  "default_locale": "en",
   "omnibox": {
     "keyword": "a11y"
   },
-  "options_page": "options/options.html"
+  "options_page": "options/options.html",
+  "incognito": "split",
+  "offline_enabled": true,
+  "minimum_chrome_version": "109",
+  "default_locale": "en",
+  "homepage_url": "https://github.com/ankitarora05/awesome-a11y-accessibility-auditor",
+  "content_security_policy": {
+    "extension_pages": "script-src 'self'; object-src 'self';"
+  }
 }

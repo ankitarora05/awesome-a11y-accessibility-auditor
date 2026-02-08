@@ -55,7 +55,19 @@ function clearHighlight() {
 
 function inspectNode(selector) {
   const el = document.querySelector(selector);
-  if (el) inspect(el);
+  if (!el) return;
+
+  el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+  el.style.outline = '3px solid #ef4444';
+  el.style.outlineOffset = '2px';
+
+  setTimeout(() => {
+    el.style.outline = '';
+    el.style.outlineOffset = '';
+  }, 2000);
+
+  console.log('[A11y Inspector] Element:', el);
 }
 
 /* ---------------- Scan ---------------- */
@@ -73,18 +85,47 @@ async function runScan() {
     if (document.getElementById('includeMinor').checked) impacts.push('minor');
 
     await chrome.scripting.executeScript({
-      target: { tabId: tab.id },
+      target: { tabId: tab.id, allFrames: true },
       files: ['vendor/axe.min.js', 'content/axe-runner.js']
     });
 
-    const [{ result }] = await chrome.scripting.executeScript({
-      target: { tabId: tab.id },
+    // Phase 1: trigger scan
+    await chrome.scripting.executeScript({
+      target: { tabId: tab.id, allFrames: true },
       func: config => window.runA11yScan(config),
       args: [{ tags: policy.automation.tags, impacts }]
     });
 
+    // Phase 2: poll for result
+    let result;
+    for (let i = 0; i < 40; i++) { // ~4 seconds max
+      const [{ result: r }] = await chrome.scripting.executeScript({
+        target: { tabId: tab.id },
+        func: () => ({
+          result: window.__A11Y_SCAN_RESULT__,
+          error: window.__A11Y_SCAN_ERROR__
+        })
+      });
+
+      if (r?.error) {
+        throw new Error(r.error);
+      }
+
+      if (r?.result) {
+        result = r.result;
+        break;
+      }
+
+      await new Promise(res => setTimeout(res, 100));
+    }
+
+    if (!result) {
+      throw new Error('A11y scan timed out');
+    }
+
     lastResults = result;
     renderResults(result);
+
   } catch (e) {
     statusEl.textContent = 'Scan failed';
     resultsEl.textContent = e.message;
@@ -134,26 +175,41 @@ function renderResults(results) {
 
         el.querySelector('.highlight').onmouseenter = () =>
           chrome.scripting.executeScript({
-            target: { tabId: currentTabId },
+            target: { tabId: currentTabId, allFrames: true },
             func: highlightNode,
             args: [selector]
           });
 
         el.querySelector('.highlight').onmouseleave = () =>
           chrome.scripting.executeScript({
-            target: { tabId: currentTabId },
+            target: { tabId: currentTabId, allFrames: true },
             func: clearHighlight
           });
 
         el.querySelector('.inspect').onclick = () =>
           chrome.scripting.executeScript({
-            target: { tabId: currentTabId },
+            target: { tabId: currentTabId, allFrames: true },
             func: inspectNode,
             args: [selector]
           });
 
-        el.querySelector('.copy').onclick = () =>
-          navigator.clipboard.writeText(getFixSnippet(v.id));
+        el.querySelector('.copy').onclick = async () => {
+          const text = getFixSnippet(v.id);
+
+          try {
+            await navigator.clipboard.writeText(text);
+          } catch {
+            const ta = document.createElement('textarea');
+            ta.value = text;
+            ta.style.position = 'fixed';
+            ta.style.opacity = '0';
+            document.body.appendChild(ta);
+            ta.select();
+            document.execCommand('copy');
+            document.body.removeChild(ta);
+          }
+        };
+
 
         nodesEl.appendChild(el);
       });
@@ -168,17 +224,31 @@ function renderResults(results) {
 
 /* ---------------- Utilities ---------------- */
 function getFixSnippet(id) {
-  switch (id) {
-    case 'button-name':
-      return `<button aria-label="Describe action"></button>`;
-    case 'label':
-      return `<label for="field">Label</label><input id="field" />`;
-    case 'color-contrast':
-      return `/* Ensure contrast ≥ 4.5:1 */`;
-    default:
-      return `/* Refer to WCAG guidance */`;
+  if (!id) return `/* Refer to WCAG guidance */`;
+
+  if (id.startsWith('button-name')) {
+    return `<button aria-label="Describe action"></button>`;
   }
+
+  if (id === 'label') {
+    return `<label for="field">Label</label><input id="field" />`;
+  }
+
+  if (id.includes('contrast')) {
+    return `/* Ensure contrast ≥ 4.5:1 for normal text */`;
+  }
+
+  if (id === 'image-alt') {
+    return `<img src="…" alt="Describe image" />`;
+  }
+
+  if (id === 'link-name') {
+    return `<a href="…">Meaningful link text</a>`;
+  }
+
+  return `/* Refer to WCAG 2.x guidance for rule: ${id} */`;
 }
+
 
 function increment(level) {
   const el = counts[level];
@@ -188,7 +258,7 @@ function increment(level) {
 function resetUI() {
   resultsEl.innerHTML = '';
   statusEl.textContent = 'Idle';
-  ['critical','serious','moderate','minor'].forEach(k =>
+  ['critical', 'serious', 'moderate', 'minor'].forEach(k =>
     counts[k].textContent = `0 ${capitalize(k)}`
   );
 }
@@ -199,7 +269,7 @@ function capitalize(s) {
 
 function escapeHtml(s) {
   return s.replace(/[&<>"']/g, m =>
-    ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[m])
+    ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[m])
   );
 }
 
