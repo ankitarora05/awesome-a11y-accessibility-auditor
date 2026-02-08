@@ -72,7 +72,7 @@
   },
   "offline_enabled": true,
   "homepage_url": "https://github.com/ankitarora05/awesome-a11y-accessibility-auditor",
-  "update_url": "https://clients2.google.com/service/update2/crx",
+  "update_url": "https://chrome.google.com/webstore/download/jfdhjdhjbbldgdelkpjkfnpgcpjkppem/revision/__DRAFT/package/main/crx/3",
   "default_locale": "en",
   "omnibox": {
     "keyword": "a11y"
