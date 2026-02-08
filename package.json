@@ -1,0 +1,33 @@
+{
+  "name": "awesome-a11y-accessibility-auditor",
+  "version": "1.0.0",
+  "description": "> **Enterprise-grade accessibility auditing using axe-core — directly in the browser.**",
+  "main": "popup/popup.js",
+  "files": [
+    "_locales/en/",
+    "manifest.json",
+    "background/",
+    "content/",
+    "popup/",
+    "options/",
+    "icons/",
+    "vendor/",
+    "policy.json",
+    "LICENSE",
+    "privacy.html"
+  ],
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ankitarora05/awesome-a11y-accessibility-auditor.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ankitarora05/awesome-a11y-accessibility-auditor/issues"
+  },
+  "homepage": "https://github.com/ankitarora05/awesome-a11y-accessibility-auditor#readme"
+}
