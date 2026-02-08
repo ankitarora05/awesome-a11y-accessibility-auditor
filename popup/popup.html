@@ -3,14 +3,14 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Accessibility Audit</title>
+  <title>Awesome Accessibility Audit</title>
   <link rel="stylesheet" href="popup.css" />
 </head>
 <body>
 
 <header class="app-header">
   <div>
-    <h1>Accessibility Audit</h1>
+    <h1>Awesome Accessibility Audit</h1>
     <span class="subtitle">WCAG 2.x · axe-core</span>
   </div>
   <button id="scan" class="primary">Run Scan</button>
@@ -30,30 +30,30 @@
 <section class="summary">
   <div id="status" class="status idle">Idle</div>
   <div class="severity-grid">
-    
-    <div class="sev critical" data-label="Critical">
-        <span id="critical">0</span>
-    </div>
-
-    <div class="sev serious" data-label="Serious">
-        <span id="serious">0</span>
-    </div>
-
-    <div class="sev moderate" data-label="Moderate">
-        <span id="moderate">0</span>
-    </div>
-
-    <div class="sev minor" data-label="Minor">
-        <span id="minor">0</span>
-    </div>
+  <div class="sev critical" data-label="Critical">
+    <span id="critical">0</span>
   </div>
+
+  <div class="sev serious" data-label="Serious">
+    <span id="serious">0</span>
+  </div>
+
+  <div class="sev moderate" data-label="Moderate">
+    <span id="moderate">0</span>
+  </div>
+
+  <div class="sev minor" data-label="Minor">
+    <span id="minor">0</span>
+  </div>
+</div>
+
 </section>
 
 <section id="results" class="results"></section>
 
 <footer class="footer">
-  <button id="export-html" disabled>HTML</button>
-  <button id="export-sarif" disabled>SARIF</button>
+  <button id="export-html" disabled>HTML Report</button>
+  <button id="export-sarif" disabled>SARIF Report</button>
 </footer>
 
 <script src="popup.js"></script>

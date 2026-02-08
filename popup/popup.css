@@ -124,30 +124,50 @@ button:disabled {
 }
 
 .severity-grid {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  display: flex;
   gap: 10px;
+  justify-content: space-between;
+  align-items: stretch;
+  flex-wrap: wrap; /* ensures responsiveness on small popups */
 }
 
 .sev {
+  flex: 1 1 0;           /* take equal space but allow shrink/grow */
+  min-width: 80px;        /* prevents very narrow widths */
   background: var(--panel);
   border: 1px solid var(--border);
   border-radius: 10px;
-  padding: 10px;
+  padding: 12px 6px;
   text-align: center;
-  font-size: 12px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  font-variant-numeric: tabular-nums; /* aligns digits */
 }
 
 .sev span {
-  display: block;
-  font-size: 20px;
+  font-size: clamp(18px, 2.5vw, 24px); /* responsive font size */
   font-weight: 600;
+  line-height: 1.1;
+  overflow-wrap: break-word;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.sev::after {
+  content: attr(data-label);
+  display: block;
+  font-size: 12px;
+  color: var(--muted);
+  margin-top: 4px;
+  white-space: nowrap;
 }
 
 .sev.critical span { color: var(--critical); }
 .sev.serious span { color: var(--serious); }
 .sev.moderate span { color: var(--moderate); }
 .sev.minor span { color: var(--minor); }
+
 
 /* ---------- Results ---------- */
 
