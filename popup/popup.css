@@ -1,0 +1,246 @@
+:root {
+  --bg: #ffffff;
+  --panel: #f6f8fa;
+  --border: #d0d7de;
+  --text: #1f2328;
+  --muted: #57606a;
+
+  --critical: #cf222e;
+  --serious: #fb8f44;
+  --moderate: #d4a72c;
+  --minor: #2da44e;
+
+  --primary: #0969da;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  width: 520px;
+  min-height: 620px;
+  padding: 16px;
+
+  font-family:
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    Roboto,
+    Helvetica,
+    Arial,
+    sans-serif;
+
+  font-size: 14px;
+  line-height: 1.45;
+
+  background: var(--bg);
+  color: var(--text);
+}
+
+/* ---------- Header ---------- */
+
+.app-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 14px;
+}
+
+h1 {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.subtitle {
+  display: block;
+  font-size: 12px;
+  color: var(--muted);
+  margin-top: 2px;
+}
+
+/* ---------- Buttons ---------- */
+
+button {
+  appearance: none;
+  background: var(--panel);
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 8px 12px;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+button.primary {
+  background: var(--primary);
+  color: #fff;
+  border-color: var(--primary);
+}
+
+button:hover:not(:disabled) {
+  background: #eaeef2;
+}
+
+button.primary:hover:not(:disabled) {
+  background: #0858c2;
+}
+
+button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* ---------- Options ---------- */
+
+.options {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 14px;
+  font-size: 13px;
+  color: var(--muted);
+}
+
+.options input {
+  margin-right: 6px;
+}
+
+/* ---------- Summary ---------- */
+
+.summary {
+  margin-bottom: 16px;
+}
+
+.status {
+  font-size: 14px;
+  margin-bottom: 10px;
+}
+
+.severity-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+}
+
+.sev {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 10px;
+  text-align: center;
+  font-size: 12px;
+}
+
+.sev span {
+  display: block;
+  font-size: 20px;
+  font-weight: 600;
+}
+
+.sev.critical span { color: var(--critical); }
+.sev.serious span { color: var(--serious); }
+.sev.moderate span { color: var(--moderate); }
+.sev.minor span { color: var(--minor); }
+
+/* ---------- Results ---------- */
+
+.results {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.violation {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-left: 5px solid;
+  border-radius: 12px;
+  padding: 14px;
+}
+
+.violation.critical { border-left-color: var(--critical); }
+.violation.serious { border-left-color: var(--serious); }
+.violation.moderate { border-left-color: var(--moderate); }
+.violation.minor { border-left-color: var(--minor); }
+
+.violation-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.violation-title {
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.violation-meta {
+  font-size: 12px;
+  color: var(--muted);
+  margin-top: 4px;
+}
+
+details {
+  margin-top: 12px;
+}
+
+summary {
+  cursor: pointer;
+  font-size: 13px;
+  color: var(--primary);
+}
+
+/* ---------- Node ---------- */
+
+.node {
+  margin-top: 10px;
+  background: #ffffff;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 10px;
+}
+
+.node pre {
+  font-size: 12px;
+  line-height: 1.4;
+  background: #f0f2f4;
+  padding: 8px;
+  border-radius: 6px;
+  overflow-x: auto;
+}
+
+.reason {
+  font-size: 12px;
+  color: var(--muted);
+  margin-top: 6px;
+}
+
+/* ---------- Actions ---------- */
+
+.actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.actions button {
+  font-size: 12px;
+  padding: 6px 10px;
+}
+
+/* ---------- Footer ---------- */
+
+.footer {
+  margin-top: 18px;
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+}

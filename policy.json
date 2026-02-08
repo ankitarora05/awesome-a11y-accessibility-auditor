@@ -1,0 +1,134 @@
+{
+  "policyVersion": "1.0.0",
+  "standard": {
+    "name": "WCAG",
+    "versions": ["2.0", "2.1", "2.2"],
+    "conformanceLevels": ["A", "AA"]
+  },
+
+  "automation": {
+    "engine": "axe-core",
+    "scope": "document",
+    "runOn": ["page", "component"],
+    "tags": [
+      "wcag2a",
+      "wcag2aa",
+      "wcag21a",
+      "wcag21aa",
+      "wcag22aa"
+    ],
+    "impacts": ["critical", "serious"],
+    "resultTypes": ["violations"],
+    "rules": {
+      "enable": "all",
+      "disable": []
+    },
+    "timeouts": {
+      "pageLoadMs": 10000,
+      "scanMs": 15000
+    }
+  },
+
+  "manualVerification": {
+    "required": true,
+    "checks": {
+      "keyboard": {
+        "required": true,
+        "description": "All functionality operable via keyboard only",
+        "wcag": ["2.1.1", "2.1.2", "2.4.7"]
+      },
+      "focusManagement": {
+        "required": true,
+        "description": "Logical focus order, visible focus indicator",
+        "wcag": ["2.4.3", "2.4.7"]
+      },
+      "screenReaders": {
+        "required": true,
+        "tools": ["NVDA", "VoiceOver"],
+        "description": "Content announced correctly by screen readers",
+        "wcag": ["1.3.1", "4.1.2"]
+      },
+      "zoomAndReflow": {
+        "required": true,
+        "zoomLevels": ["200%"],
+        "description": "Content reflows without loss of information",
+        "wcag": ["1.4.4", "1.4.10"]
+      },
+      "colorAndContrastVisual": {
+        "required": true,
+        "description": "Visual contrast reviewed by human",
+        "wcag": ["1.4.3", "1.4.11"]
+      },
+      "cognitiveAndUX": {
+        "required": false,
+        "description": "Clear instructions, error prevention, readability",
+        "wcag": ["3.3.1", "3.3.3"]
+      }
+    }
+  },
+
+  "baseline": {
+    "enabled": true,
+    "allowedViolations": [],
+    "expiryDays": 90,
+    "requireJustification": true
+  },
+
+  "governance": {
+    "ciEnforcement": {
+      "blockOnImpacts": ["critical", "serious"],
+      "allowWithRiskAcceptance": false
+    },
+    "releaseRequirements": {
+      "automatedPassRequired": true,
+      "manualSignoffRequired": true
+    },
+    "evidenceRetention": {
+      "retainArtifacts": true,
+      "formats": ["json", "html", "sarif"],
+      "minimumRetentionDays": 180
+    }
+  },
+
+  "reporting": {
+    "formats": {
+      "json": {
+        "enabled": true,
+        "purpose": "raw tool output"
+      },
+      "html": {
+        "enabled": true,
+        "purpose": "human readable report"
+      },
+      "sarif": {
+        "enabled": true,
+        "purpose": "security and compliance tooling"
+      }
+    }
+  },
+
+  "storybook": {
+    "enabled": true,
+    "enforceParity": true,
+    "failOnViolation": true,
+    "scope": "component"
+  },
+
+  "extension": {
+    "enabled": true,
+    "allowProductionDomains": true,
+    "requireUserGesture": true,
+    "exportFormats": ["json", "html", "sarif"]
+  },
+
+  "disclaimers": {
+    "automatedCoverageNote": "Automated testing covers a subset of WCAG success criteria and must be complemented with manual verification.",
+    "noLegalClaim": "Passing automated checks does not constitute full WCAG compliance."
+  },
+
+  "metadata": {
+    "owner": "Accessibility Platform Team",
+    "reviewCycle": "quarterly",
+    "lastReviewed": "2026-02-01"
+  }
+}

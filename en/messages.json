@@ -1,0 +1,8 @@
+{
+  "extensionName": {
+    "message": "Awesome Accessibility Auditor"
+  },
+  "extensionDescription": {
+    "message": "Enterprise-grade WCAG accessibility auditing using axe-core with HTML and SARIF reporting."
+  }
+}

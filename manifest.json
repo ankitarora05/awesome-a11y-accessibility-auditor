@@ -1,0 +1,74 @@
+{
+  "manifest_version": 3,
+  "name": "Awesome Accessibility Auditor",
+  "short_name": "A11y Auditor",
+  "version": "1.0.0",
+  "description": "Enterprise-grade WCAG accessibility auditing using axe-core with HTML and SARIF reporting.",
+  "author": "Accessibility Platform Team",
+  "icons": {
+    "16": "icons/icon-16.png",
+    "32": "icons/icon-32.png",
+    "48": "icons/icon-48.png",
+    "128": "icons/icon-128.png"
+  },
+  "action": {
+    "default_title": "Run Accessibility Audit",
+    "default_popup": "popup/popup.html"
+  },
+  "permissions": [
+    "activeTab",
+    "scripting",
+    "downloads",
+    "storage"
+  ],
+  "host_permissions": [
+    "<all_urls>"
+  ],
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": [
+        "vendor/axe.min.js",
+        "content/axe-runner.js"
+      ],
+      "run_at": "document_idle"
+    }
+  ],
+  "background": {
+    "service_worker": "background/service-worker.js",
+    "type": "module"
+  },
+  "web_accessible_resources": [
+    {
+      "resources": [
+        "policy.json",
+        "vendor/axe.min.js"
+      ],
+      "matches": ["<all_urls>"]
+    }
+  ],
+  "minimum_chrome_version": "109",
+  "optional_permissions": [],
+  "optional_host_permissions": [],
+  "commands": {
+    "run-scan": {
+      "suggested_key": {
+        "default": "Ctrl+Shift+A",
+        "mac": "Command+Shift+A"
+      },
+      "description": "Run accessibility scan on the current page"
+    }
+  },
+  "incognito": "split",
+  "content_security_policy": {
+    "extension_pages": "script-src 'self'; object-src 'self';"
+  },
+  "offline_enabled": true,
+  "homepage_url": "https://github.com/your-org/enterprise-a11y-auditor",
+  "update_url": "https://clients2.google.com/service/update2/crx",
+  "default_locale": "en",
+  "omnibox": {
+    "keyword": "a11y"
+  },
+  "options_page": "options/options.html"
+}
