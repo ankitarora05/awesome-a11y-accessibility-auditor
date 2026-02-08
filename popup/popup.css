@@ -17,7 +17,8 @@
   box-sizing: border-box;
 }
 
-html, body {
+html,
+body {
   margin: 0;
   padding: 0;
 }
@@ -128,12 +129,15 @@ button:disabled {
   gap: 10px;
   justify-content: space-between;
   align-items: stretch;
-  flex-wrap: wrap; /* ensures responsiveness on small popups */
+  flex-wrap: wrap;
+  /* ensures responsiveness on small popups */
 }
 
 .sev {
-  flex: 1 1 0;           /* take equal space but allow shrink/grow */
-  min-width: 80px;        /* prevents very narrow widths */
+  flex: 1 1 0;
+  /* take equal space but allow shrink/grow */
+  min-width: 80px;
+  /* prevents very narrow widths */
   background: var(--panel);
   border: 1px solid var(--border);
   border-radius: 10px;
@@ -142,11 +146,13 @@ button:disabled {
   display: flex;
   flex-direction: column;
   justify-content: center;
-  font-variant-numeric: tabular-nums; /* aligns digits */
+  font-variant-numeric: tabular-nums;
+  /* aligns digits */
 }
 
 .sev span {
-  font-size: clamp(18px, 2.5vw, 24px); /* responsive font size */
+  font-size: clamp(18px, 2.5vw, 24px);
+  /* responsive font size */
   font-weight: 600;
   line-height: 1.1;
   overflow-wrap: break-word;
@@ -155,7 +161,6 @@ button:disabled {
 }
 
 .sev::after {
-  content: attr(data-label);
   display: block;
   font-size: 12px;
   color: var(--muted);
@@ -163,10 +168,21 @@ button:disabled {
   white-space: nowrap;
 }
 
-.sev.critical span { color: var(--critical); }
-.sev.serious span { color: var(--serious); }
-.sev.moderate span { color: var(--moderate); }
-.sev.minor span { color: var(--minor); }
+.sev.critical span {
+  color: var(--critical);
+}
+
+.sev.serious span {
+  color: var(--serious);
+}
+
+.sev.moderate span {
+  color: var(--moderate);
+}
+
+.sev.minor span {
+  color: var(--minor);
+}
 
 
 /* ---------- Results ---------- */
@@ -185,10 +201,21 @@ button:disabled {
   padding: 14px;
 }
 
-.violation.critical { border-left-color: var(--critical); }
-.violation.serious { border-left-color: var(--serious); }
-.violation.moderate { border-left-color: var(--moderate); }
-.violation.minor { border-left-color: var(--minor); }
+.violation.critical {
+  border-left-color: var(--critical);
+}
+
+.violation.serious {
+  border-left-color: var(--serious);
+}
+
+.violation.moderate {
+  border-left-color: var(--moderate);
+}
+
+.violation.minor {
+  border-left-color: var(--minor);
+}
 
 .violation-header {
   display: flex;
@@ -258,9 +285,16 @@ summary {
 
 /* ---------- Footer ---------- */
 
+
 .footer {
-  margin-top: 18px;
   display: flex;
   gap: 10px;
   justify-content: flex-end;
+  position: fixed;
+  bottom: -10px;
+  margin: 10px;
+  right: 4px;
+  background: rgba(0, 0, 0, 0.1);
+  width: 100%;
+  padding: 5px 0;
 }
