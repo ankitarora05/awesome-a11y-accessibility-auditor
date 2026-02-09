@@ -1,6 +1,6 @@
 {
   "name": "awesome-a11y-accessibility-auditor",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "> **Enterprise-grade accessibility auditing using axe-core — directly in the browser.**",
   "main": "popup/popup.js",
   "files": [

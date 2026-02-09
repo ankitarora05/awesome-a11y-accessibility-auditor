@@ -2706,6 +2706,14 @@ function renderResults(results) {
               });
             });
 
+            highlightBtn.addEventListener('click', () => {
+              chrome.scripting.executeScript({
+                target: { tabId: currentTabId, allFrames: true },
+                func: highlightNode,
+                args: [selector]
+              });
+            });
+
             highlightBtn.addEventListener('focus', () => {
               chrome.scripting.executeScript({
                 target: { tabId: currentTabId, allFrames: true },
@@ -2924,7 +2932,7 @@ ${customFix}
 /* 3. Verify keyboard accessibility
 /* 4. Check color contrast requirements
 
-${node?.html ? `Problematic element: ${escapeHtml(node.html.substring(0, 100))}` : ''}`;
+${node?.html ? `Problematic element: ${node.html}` : ''}`;
 }
 
 function increment(level) {
