@@ -4,6 +4,8 @@
 
 **Awesome A11y Accessibility Auditor** is a Chrome extension and open-source toolkit for running **automated WCAG 2.x & ADA accessibility audits**, inspecting affected DOM elements, and exporting results for engineering, QA, and compliance workflows.
 
+[Add to chrome](https://chromewebstore.google.com/detail/jfdhjdhjbbldgdelkpjkfnpgcpjkppem)
+
 ---
 
 ## 📊 Automated Coverage Statistics
