@@ -6,6 +6,8 @@
 
 [Add to chrome](https://chromewebstore.google.com/detail/jfdhjdhjbbldgdelkpjkfnpgcpjkppem)
 
+[Add to MS Edge](https://microsoftedge.microsoft.com/addons/detail/awesome-accessibility-aud/ahaopljjhfabglgmfhfdjcjkofnmmcol)
+
 ---
 
 ## 📊 Automated Coverage Statistics
